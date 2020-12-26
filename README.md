@@ -1,46 +1,62 @@
-# rollup-starter-lib
+# HHTML
+## Hyper-Hypertext Markup Language
+**A JavaScript library to create and manipulate DOM elements and to manage their state**
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/rollup/rollup-starter-lib.svg)](https://greenkeeper.io/)
+✨ *0 dependencies* ✨<br>
+✨ *Safe from XSS attacks* ✨<br>
+✨ *TypeScript Support (WIP)* ✨<br>
+✨ *Thoroughly Unit Tested (WIP)* ✨<br>
 
-This repo contains a bare-bones example of how to create a library using Rollup, including importing a module from `node_modules` and converting it from CommonJS.
 
-We're creating a library called `how-long-till-lunch`, which usefully tells us how long we have to wait until lunch, using the [ms](https://github.com/zeit/ms) package:
+## Features
+- Create DOM Elements using `useView`.
+- Easy view model/state management using `useViewModel`
+- Add refs to specific DOM elements to collect and use later `example.collect()`
 
-```js
-console.log('it will be lunchtime in ' + howLongTillLunch());
+####  Example:
+
+```javascript
+import { useView, useViewModel } from 'hhtml'
+
+// Allow your view to react to changes in your data by using useViewModel
+const greetingData = useViewModel({name: 'world 🌎'})
+
+// Create the actual DOM element
+const greetingElement = useView`
+    <div>
+        <h1 ref="message">Hello, ${greetingData.$name}</h1>
+    </div>
+`
+
+// Appends h1 w/ "Hello, world 🌎" to DOM
+document.body.appendChild(greetingElement)
+
+// Changes any text using the name property to "hotdog 🌭"
+greetingData.name = "hotdog 🌭"
+
+// Retrieve all ref elements in an object
+const { message } = greetingElement.collect()
+
 ```
 
-## Getting started
+## API
+`TODO`
+### useView
+`TODO`
+#### collect
+`TODO`
+### useViewModel
+`TODO`
 
-Clone this repository and install its dependencies:
+### Examples
+```javascript
+// TODO
 
-```bash
-git clone https://github.com/rollup/rollup-starter-lib
-cd rollup-starter-lib
-npm install
+// Simple example
+
+// Example w/ View Model
+
+// Creating reusable components
+
+// Creating a form
 ```
-
-`npm run build` builds the library to `dist`, generating three files:
-
-* `dist/how-long-till-lunch.cjs.js`
-    A CommonJS bundle, suitable for use in Node.js, that `require`s the external dependency. This corresponds to the `"main"` field in package.json
-* `dist/how-long-till-lunch.esm.js`
-    an ES module bundle, suitable for use in other people's libraries and applications, that `import`s the external dependency. This corresponds to the `"module"` field in package.json
-* `dist/how-long-till-lunch.umd.js`
-    a UMD build, suitable for use in any environment (including the browser, as a `<script>` tag), that includes the external dependency. This corresponds to the `"browser"` field in package.json
-
-`npm run dev` builds the library, then keeps rebuilding it whenever the source files change using [rollup-watch](https://github.com/rollup/rollup-watch).
-
-`npm test` builds the library, then tests it.
-
-## Variations
-
-* [babel](https://github.com/rollup/rollup-starter-lib/tree/babel) — illustrates writing the source code in ES2015 and transpiling it for older environments with [Babel](https://babeljs.io/)
-* [buble](https://github.com/rollup/rollup-starter-lib/tree/buble) — similar, but using [Bublé](https://buble.surge.sh/) which is a faster alternative with less configuration
-* [TypeScript](https://github.com/rollup/rollup-starter-lib/tree/typescript) — uses [TypeScript](https://www.typescriptlang.org/) for type-safe code and transpiling
-
-
-
-## License
-
-[MIT](LICENSE).

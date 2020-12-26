@@ -1,4 +1,4 @@
-import { handleSetProp } from "../../useState";
+import { handleSetProp } from "../../useViewModel";
 import { useSchema, Schema } from "../../private";
 import { View } from "../safe";
 
@@ -17,6 +17,7 @@ export const useViewModel = (
   const viewModel = schema.props.reduce((viewModel, schemaProp) => {
     const { key, value } = schemaProp;
 
+    // If the current schema prop value is an array, iterate through and add any child vm to the parent vm
     if (Array.isArray(value)) {
       return value.reduce(
         (viewModel, { viewModel: childVm }) =>
@@ -28,6 +29,7 @@ export const useViewModel = (
       );
     }
 
+    // If there is a key, we know the property was created with the intention of being accessible by the user.
     if (key) {
       viewModel[key] = schemaProp;
       isValidViewModel = true;
@@ -35,6 +37,7 @@ export const useViewModel = (
     return viewModel;
   }, {});
 
+  // Proxy traps
   const traps = {
     get(model, key) {
       // Expose a secret key that will return the model itself
@@ -54,8 +57,5 @@ export const useViewModel = (
     },
   };
 
-  if (isValidViewModel) {
-    view.viewModel = new Proxy(viewModel, traps);
-    return viewModel;
-  }
+  return isValidViewModel ? new Proxy(viewModel, traps) : undefined;
 };

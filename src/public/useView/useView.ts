@@ -21,9 +21,9 @@ export const useView = function (
 
   // Before returning the view, transform any ids to their intended value
   const view = transformNodes(schema, template.content);
-  useViewModel(schema, view);
 
   view.collect = useCollect(view);
+  view.viewModel = useViewModel(schema, view);
 
   view.copy = () => {
     const newView = view.cloneNode(true);

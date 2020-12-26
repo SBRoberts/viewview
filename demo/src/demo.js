@@ -1,22 +1,22 @@
 import hhtml from "../../src/main";
-const { useView, useState } = hhtml;
+const { useView, useViewModel } = hhtml;
 
 const appRoot = document.getElementById("root");
 
 const listData = [1, 2, 3, 4];
 
 const List = (props) => {
-  const state = useState(props);
+  const viewModel = useViewModel(props);
 
   const view = useView`
     <ul ref="listEl">
-      ${state.map((num, i) =>
+      ${viewModel.map((num, i) =>
         i !== 1
           ? useView`
           <li ref="listItem${i}">
             List Item: ${num} +
-            <span>${num.calc((num) => num + 1)}</span> =
-            <span>${num.calc((num) => num + num + 1)}</span> 
+            <span>${num.calc((val) => val + 1)}</span> =
+            <span>${num.calc((val) => val + val + 1)}</span> 
           </li>
           `
           : useView`<li>List Item: ${num} is aight too</li>`
@@ -27,8 +27,11 @@ const List = (props) => {
 
   listEl.addEventListener("click", (e) => {
     const itemIdx = Array.from(listEl.children).indexOf(e.target);
-    itemIdx > -1 && (state[itemIdx] = Math.floor(Math.random() * 7));
+    itemIdx > -1 && (viewModel[itemIdx] = Math.floor(Math.random() * 7));
   });
+
+  console.log("viewModel", viewModel);
+  console.log("view.viewModel", view.viewModel);
 
   return view;
 };
@@ -40,7 +43,7 @@ setTimeout(() => {
   console.log("ARRRGH 🏴‍☠️", NormalList.viewModel);
 }, 2000);
 
-const sectionData = useState({
+const sectionData = useViewModel({
   top: "TOP TEXT",
   bottom: "BOTTOM TEXT",
   title: "Hello! 👋",

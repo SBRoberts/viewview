@@ -1,8 +1,8 @@
-import { useView, useState } from "./public";
+import { useView, useViewModel } from "./public";
 
 const hhtml = {
   useView,
-  useState,
+  useViewModel,
 };
 
 export default hhtml;

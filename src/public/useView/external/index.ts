@@ -1,2 +1,2 @@
 export * from "./collect";
-export * from "./useViewModel";
+export * from "./viewModel";

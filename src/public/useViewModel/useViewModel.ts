@@ -19,7 +19,7 @@ export const handleSetProp = (prop, value) => {
  * * Ex: `<span style="color: ${data.$myColour}">${data.$myColour}</span>`
  * @param model the object whose data will populate the view. Updating this model will also update the view.
  */
-export const useState = function (
+export const useViewModel = function (
   model: Record<string | number> | any[]
 ): Proxy {
   const schema: Schema = useSchema();

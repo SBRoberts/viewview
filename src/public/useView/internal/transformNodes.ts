@@ -1,4 +1,4 @@
-import { addObserver, Schema } from "../../modules";
+import { Schema, nodeUpdater } from "../../modules";
 import { View } from "../types";
 
 const deriveArgType = (value) => {
@@ -19,7 +19,7 @@ const transformTextNode = (schemaProp) => {
 
     // If the current text node contains the current id, do stuff
     if (node.textContent.includes(id)) {
-      addObserver(node, schemaProp);
+      schemaProp.observe(nodeUpdater(node), schemaProp);
 
       if (valueType === "array") {
         value.forEach(transformTextNode(schemaProp));
@@ -40,7 +40,7 @@ const transformAttribute = (schemaProp) => {
   const { id, value } = schemaProp;
   return (node) => {
     if (!node.value.includes(id) || node.name === "data-id") return;
-    addObserver(node, schemaProp);
+    schemaProp.observe(nodeUpdater(node), schemaProp);
     node.value = node.value.replace(id, value);
   };
 };
