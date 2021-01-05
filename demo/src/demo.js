@@ -1,5 +1,5 @@
-import hhtml from "../../src/main";
-const { useView, useViewModel } = hhtml;
+import viewview from "../../src/main";
+const { useView, useViewModel } = viewview;
 
 const appRoot = document.getElementById("root");
 

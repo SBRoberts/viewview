@@ -1,4 +1,8 @@
+import { SchemaProp } from "../modules/";
+type collectedElement = Record<string | number, Element>;
+type viewModelProp = Record<string | number, SchemaProp> | undefined;
+
 export interface View extends DocumentFragment {
-  collect: () => Record<any>;
-  viewModel?: Record<any>;
+  collect: () => collectedElement;
+  viewModel: viewModelProp;
 }

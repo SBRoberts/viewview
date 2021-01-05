@@ -1,9 +1,9 @@
 {
-  "name": "hhtml",
-  "version": "1.0.0",
-  "main": "dist/hhtml.cjs.js",
-  "module": "dist/hhtml.esm.js",
-  "browser": "dist/hhtml.umd.js",
+  "name": "viewview",
+  "version": "0.0.1",
+  "main": "dist/viewview.cjs.js",
+  "module": "dist/viewview.esm.js",
+  "browser": "dist/viewview.umd.js",
   "dependencies": {},
   "devDependencies": {
     "@types/ms": "^0.7.30",
@@ -21,7 +21,8 @@
     "build": "rollup -c rollup.config.js",
     "dev": "rollup -c rollup.config.dev.js -w",
     "test": "ts-node test/test.ts rollup.config.dev.js",
-    "pretest": "npm run build"
+    "pretest": "npm run build",
+    "publish": "rollup -c rollup.config.js && npm publish --access=public"
   },
   "files": [
     "dist"

@@ -12,7 +12,9 @@ const rollupOptions = {
   input: "demo/src/demo.js",
   external: ["ms"],
   plugins: [
-    typescript(), // so Rollup can convert TypeScript to JavaScript
+    typescript({
+      tsconfig: "tsconfig.json",
+    }), // so Rollup can convert TypeScript to JavaScript
   ],
   watch: {
     include: ["demo/src/**", "src/**"],

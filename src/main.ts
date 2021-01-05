@@ -1,8 +1,8 @@
 import { useView, useViewModel } from "./public";
 
-const hhtml = {
+const viewview = {
   useView,
   useViewModel,
 };
 
-export default hhtml;
+export default viewview;

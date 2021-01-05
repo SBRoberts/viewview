@@ -8,7 +8,7 @@ export default [
   {
     input: "src/main.ts",
     output: {
-      name: "hhtml",
+      name: "viewview",
       file: pkg.browser,
       format: "umd",
     },
@@ -25,15 +25,15 @@ export default [
   // builds from a single configuration where possible, using
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
-  {
-    input: "src/main.ts",
-    external: ["ms"],
-    plugins: [
-      typescript(), // so Rollup can convert TypeScript to JavaScript
-    ],
-    output: [
-      { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" },
-    ],
-  },
+  // {
+  //   input: "src/main.ts",
+  //   external: ["ms"],
+  //   plugins: [
+  //     typescript(), // so Rollup can convert TypeScript to JavaScript
+  //   ],
+  //   output: [
+  //     { file: pkg.main, format: "cjs" },
+  //     { file: pkg.module, format: "es" },
+  //   ],
+  // },
 ];

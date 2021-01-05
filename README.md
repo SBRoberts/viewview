@@ -1,4 +1,4 @@
-# HHTML
+# viewview
 ## Hyper-Hypertext Markup Language
 **A JavaScript library to create and manipulate DOM elements and to manage their state**
 
@@ -16,7 +16,7 @@
 ####  Example:
 
 ```javascript
-import { useView, useViewModel } from 'hhtml'
+import { useView, useViewModel } from 'viewview'
 
 // Allow your view to react to changes in your data by using useViewModel
 const greetingData = useViewModel({name: 'world 🌎'})
