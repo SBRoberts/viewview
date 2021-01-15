@@ -1,6 +1,6 @@
 import { handleSetProp } from "../../useViewModel";
 import { useSchema, Schema } from "../../private";
-import { View } from "../safe";
+import { View } from "../types";
 
 /**
  * This method exposes a viewModel on the view if there are any valid properties, which is to say any properties with a defined 'key' property/
@@ -8,10 +8,7 @@ import { View } from "../safe";
  * @param schema - The schema used to generate the view
  * @param view - The view on which we are exposing a viewModel
  */
-export const useViewModel = (
-  schema: Schema,
-  view: View
-): Record<any> | void => {
+export const viewModel = (schema: Schema, view: View): Record<any> | void => {
   let isValidViewModel = false;
 
   const viewModel = schema.props.reduce((viewModel, schemaProp) => {
@@ -19,9 +16,8 @@ export const useViewModel = (
 
     // If the current schema prop value is an array, iterate through and add any child vm to the parent vm
     if (Array.isArray(value)) {
-      console.log("viewModel", viewModel);
       return value.reduce(
-        (viewModel, { viewModel: childVm = undefined }) =>
+        (viewModel, { viewModel: childVm }) =>
           childVm
             ? (isValidViewModel = true) &&
               Object.assign(viewModel, childVm.$prototype)

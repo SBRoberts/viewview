@@ -2,7 +2,7 @@ import { transformNodes, interleaveTemplateLiteral } from "./internal";
 
 import { useSchema } from "../modules";
 
-import { useCollect, useViewModel } from "./external";
+import { useCollect, viewModel } from "./external";
 import { View } from "./types";
 
 export const view = function (
@@ -23,12 +23,12 @@ export const view = function (
   const view = transformNodes(schema, template.content);
 
   view.collect = useCollect(view);
-  view.viewModel = useViewModel(schema, view);
+  view.viewModel = viewModel(schema, view);
 
   view.copy = () => {
     const newView = view.cloneNode(true);
     view.collect = useCollect(view);
-    useViewModel(schema, newView);
+    viewModel(schema, newView);
     return newView;
   };
 

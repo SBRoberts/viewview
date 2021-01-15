@@ -7,7 +7,7 @@ export const schemaPropFactory = (schema: Schema) => (
   const prototype = Object.create({
     id: "_" + Math.random().toString(36).substr(2, 9),
     update: update,
-    calc: useCalc(schema),
+    compute: useCompute(schema),
     observe: useObserve,
   });
 
@@ -36,7 +36,7 @@ function update(value) {
 /**
  * Display the result of an expression that uses and observes an existing schema property value as a dependency
  */
-const useCalc = (schema: Schema) => {
+const useCompute = (schema: Schema) => {
   return function (expression: Function) {
     const schemaProp = schema.defineProperty(expression(this.value));
     schemaProp.expression = expression;

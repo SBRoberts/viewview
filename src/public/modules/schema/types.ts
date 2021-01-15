@@ -15,7 +15,7 @@ export interface SchemaProp {
   key: SchemaPropKey;
   value: SchemaPropValue;
   update: SchemaPropUpdate;
-  calc: SchemaPropCalc;
+  compute: SchemaPropCalc;
   observers?: SchemaPropNotify[];
   dependants?: SchemaProp[];
 }

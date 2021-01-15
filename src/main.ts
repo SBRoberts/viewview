@@ -1,7 +1,7 @@
-import { useView, useViewModel } from "./public";
+import { view, useViewModel } from "./public";
 
 const viewview = {
-  useView,
+  view,
   useViewModel,
 };
 

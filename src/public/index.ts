@@ -1,2 +1,2 @@
-export * from "./useView";
+export * from "./view";
 export * from "./useViewModel";

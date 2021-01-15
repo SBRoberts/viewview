@@ -45,6 +45,7 @@ export const useViewModel = function (
 
       // Return the prop value if the prop has ben defined in our schema.
       if (!isContructing && schema.hasProperty(key)) {
+        console.log("prop", prop);
         return Reflect.get(prop, "value");
       }
 
