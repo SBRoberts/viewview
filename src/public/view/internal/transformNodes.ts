@@ -20,11 +20,16 @@ const transformTextNode = (schemaProp) => {
     // If the current text node contains the current id, do stuff
     if (node.textContent.includes(id)) {
       schemaProp.observe(nodeUpdater(node), schemaProp);
+      // console.log("schemaProp", schemaProp);
+      // console.log("node", node);
 
       if (valueType === "array") {
         value.forEach(transformTextNode(schemaProp));
         node.textContent = node.textContent.replace(id, "");
       } else if (valueType !== "object") {
+        // console.log("node", node);
+        // console.log("id", id);
+        // console.log("value", value);
         node.textContent = node.textContent.replace(id, value);
       }
     }

@@ -29,9 +29,11 @@ export const useViewModel = function (
   // Define proxy intercept methods
   const traps: ProxyHandler = {
     get(model, key) {
+      console.log("GET ---");
       // If the key is prefixed with a `$`, we are building the view and should always return the prop object, if possible
       const isContructing = key[0] === "$";
       key = isContructing ? key.replace("$", "") : key;
+      console.log("key", key);
 
       // If prop doesn't exist return undefined
       if (!(key in model)) return;
@@ -41,21 +43,47 @@ export const useViewModel = function (
         return Reflect.get(...arguments);
       }
 
-      const prop = model[key];
+      let prop = model[key];
+      const isSchemaProp =
+        typeof prop === "object" &&
+        prop.hasOwnProperty("id") &&
+        schema.getPropertyById(prop.id);
+      console.log("prop", prop);
+      console.log("isSchemaProp", isSchemaProp);
+      console.log("prop.id", prop.id);
+
+      // console.log("key", key);
 
       // Return the prop value if the prop has ben defined in our schema.
-      if (!isContructing && schema.hasProperty(key)) {
-        return Reflect.get(prop, "value");
+      if (isSchemaProp) {
+        if (!isContructing) {
+          return Reflect.get(prop, "value");
+        }
+      } else if (typeof prop === "object") {
+        if (!isContructing) {
+          return Reflect.get(...arguments);
+        }
+        // console.log("prop", prop);
+        prop = new Proxy(prop, this);
+        // console.log("prop", prop);
       }
+
+      // console.log("prop", prop);
 
       // Our property exists in our model, but not in our schema. Let's define and return it
       const schemaProp = schema.defineProperty(prop, key);
+      console.log("schemaProp", schemaProp);
       model[key] = schemaProp;
       return schemaProp;
     },
     set(model, key, value) {
       // Update the prop, if possible
+      console.log("SET ---");
+      console.log("model", model);
+      console.log("key", key);
+      console.log("value", value);
       const prop = schema.getPropertyByKey(key);
+      // // console.log("prop", prop);
       return handleSetProp(prop, value);
     },
   };

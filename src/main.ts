@@ -1,8 +1,2 @@
-import { useView, useViewModel } from "./public";
-
-const viewview = {
-  useView,
-  useViewModel,
-};
-
-export default viewview;
+export * as viewview from "./public";
+export { view, useViewModel } from "./public";

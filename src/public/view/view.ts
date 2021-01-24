@@ -5,7 +5,7 @@ import { useSchema } from "../modules";
 import { useCollect, useViewModel } from "./external";
 import { View } from "./types";
 
-export const useView = function (
+export const view = function (
   strings: TemplateStringsArray,
   ...args: any[]
 ): View {

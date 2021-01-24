@@ -53,6 +53,9 @@ export const nodeUpdater = (node: Text | Attr) => {
 
   return function updateNode(newValue): void {
     oldValue = this.value;
+    // console.log("oldValue", oldValue);
+    // console.log("newValue", newValue);
+    // console.log("node", node);
 
     node === typeof "attribute object"
       ? (node.value = node.value.replace(oldValue, newValue))
