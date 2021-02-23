@@ -1,29 +1,72 @@
-import viewview from "../../src/main";
-const { useView, useViewModel } = viewview;
+import { view, useViewModel } from "../../src/main";
 
 const appRoot = document.getElementById("root");
+
+const pets = {
+  cat: {
+    name: "Stevie",
+    age: 2,
+    breed: {
+      type: "baka",
+    },
+  },
+  dog: {
+    name: "Papapia",
+    age: 3,
+    breed: {
+      type: "baka2",
+    },
+  },
+  num: 3,
+};
+
+const vm = useViewModel(pets);
+console.log("vm", vm);
+
+// console.log("vm.dog.breed.type ", vm.dog.breed.type);
+
+const element = view`
+  <div>
+    <h1>${vm.$num} x 2 = ${vm.$num.compute((val) => val * 2)}</h1>
+
+    <h1>CAT</h1>
+    <h2>${vm.cat.$name}</h2>
+    <h2>${vm.cat.$age}</h2>
+    <h2>${vm.cat.breed.$type}</h2>
+    <h1>DOG</h1>
+    <h2>${vm.dog.$name}</h2>
+    <h2>${vm.dog.$age}</h2>
+    <h2>${vm.dog.breed.$type}</h2>
+    <h2>${vm.dog.breed.$type}</h2>
+    </div>
+    `;
+vm.dog.breed.type = "good booi";
+vm.num = 11;
+
+appRoot.appendChild(element);
+console.log("vm", vm);
 
 const listData = [1, 2, 3, 4];
 
 const List = (props) => {
   const viewModel = useViewModel(props);
 
-  const view = useView`
+  const element = view`
     <ul ref="listEl">
       ${viewModel.map((num, i) =>
         i !== 1
-          ? useView`
+          ? view`
           <li ref="listItem${i}">
             List Item: ${num} +
-            <span>${num.calc((val) => val + 1)}</span> =
-            <span>${num.calc((val) => val + val + 1)}</span> 
+            <span>${num.compute((val) => val + 1)}</span> =
+            <span>${num.compute((val) => val + val + 1)}</span>
           </li>
           `
-          : useView`<li>List Item: ${num} is aight too</li>`
+          : view`<li>List Item: ${num} is aight too</li>`
       )}
     </ul>`;
 
-  const { listEl } = view.collect();
+  const { listEl } = element.collect();
 
   listEl.addEventListener("click", (e) => {
     const itemIdx = Array.from(listEl.children).indexOf(e.target);
@@ -31,9 +74,9 @@ const List = (props) => {
   });
 
   console.log("viewModel", viewModel);
-  console.log("view.viewModel", view.viewModel);
+  console.log("element.viewModel", element.viewModel);
 
-  return view;
+  return element;
 };
 
 const NormalList = List(listData);
@@ -60,7 +103,7 @@ const sectionData = useViewModel({
 const SectionList = List(listData);
 
 const Section = () => {
-  return useView`<div class="module">
+  return view`<div class="module">
     ${sectionData.top}
     <h1 ref="title" id="${sectionData.titleId}">${sectionData.title}</h1>
     <h2 ref="heading" class="heading">${sectionData.heading}</h2>
@@ -84,7 +127,7 @@ const Section = () => {
 
 const MainSection = Section();
 
-const Page = useView`
+const Page = view`
   ${NormalList}
   ${MainSection}
 `;

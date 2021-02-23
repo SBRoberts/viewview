@@ -22,11 +22,18 @@ export const useSchema = function (instance: Schema | undefined): Schema {
       const generateSchemaProp = schemaPropFactory(this);
 
       if (isSchemaProp(value)) {
-        const { id } = value;
-        if (!this.getPropertyById(id)) {
+        const { id, parent } = value;
+
+        if (!this.hasId(id)) {
           this.props.push(value);
           this.ids.push(id);
         }
+
+        if (parent && !this.hasId(parent.id)) {
+          this.props.push(parent);
+          this.ids.push(parent.id);
+        }
+
         return value;
       }
 
@@ -48,7 +55,7 @@ export const useSchema = function (instance: Schema | undefined): Schema {
       return this.props.some((item) => item.key === key);
     },
     hasId(id): boolean {
-      this.props.some((item) => item.id === id);
+      return this.props.some((item) => item.id === id);
     },
   };
 

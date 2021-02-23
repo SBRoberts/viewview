@@ -19,14 +19,12 @@ export const useViewModel = (
 
     // If the current schema prop value is an array, iterate through and add any child vm to the parent vm
     if (Array.isArray(value)) {
-      return value.reduce(
-        (viewModel, { viewModel: childVm }) =>
-          childVm
-            ? (isValidViewModel = true) &&
+      return value.reduce((viewModel, { viewModel: childVm }) => {
+        return childVm
+          ? (isValidViewModel = true) &&
               Object.assign(viewModel, childVm.$prototype)
-            : viewModel,
-        viewModel
-      );
+          : viewModel;
+      }, viewModel);
     }
 
     // If there is a key, we know the property was created with the intention of being accessible by the user.

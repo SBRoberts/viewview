@@ -6,8 +6,7 @@ export const handleSetProp = (prop, value) => {
   // Return undefined if the prop isn't defined.
   if (!prop) return true;
 
-  // Update the prop if the value has changed and an update fn is defined
-  prop.value !== value && prop.update(value);
+  prop.update(value);
 
   return prop;
 };
@@ -41,20 +40,29 @@ export const useViewModel = function (
         return Reflect.get(...arguments);
       }
 
-      const prop = model[key];
+      let prop = model[key];
 
-      // Return the prop value if the prop has ben defined in our schema.
-      if (!isContructing && schema.hasProperty(key)) {
+      const isSchemaProp =
+        typeof prop === "object" && "id" in prop && schema.hasId(prop.id);
+
+      // If the prop is an object and not a schema property, we want to proxify it
+      if (!isSchemaProp && typeof prop === "object" && !Array.isArray(prop)) {
+        const proxified = new Proxy(prop, this);
+        model[key] = proxified;
+        return proxified;
+      }
+
+      // If the property is a schema property but we're not in construciton mode, return the value
+      if (isSchemaProp && !isContructing) {
         return Reflect.get(prop, "value");
       }
 
       // Our property exists in our model, but not in our schema. Let's define and return it
       const schemaProp = schema.defineProperty(prop, key);
       model[key] = schemaProp;
-      return schemaProp;
+      return isContructing ? schemaProp : prop;
     },
     set(model, key, value) {
-      // Update the prop, if possible
       const prop = schema.getPropertyByKey(key);
       return handleSetProp(prop, value);
     },

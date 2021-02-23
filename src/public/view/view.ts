@@ -5,7 +5,7 @@ import { useSchema } from "../modules";
 import { useCollect, useViewModel } from "./external";
 import { View } from "./types";
 
-export const useView = function (
+export const view = function (
   strings: TemplateStringsArray,
   ...args: any[]
 ): View {
@@ -24,13 +24,6 @@ export const useView = function (
 
   view.collect = useCollect(view);
   view.viewModel = useViewModel(schema, view);
-
-  view.copy = () => {
-    const newView = view.cloneNode(true);
-    view.collect = useCollect(view);
-    useViewModel(schema, newView);
-    return newView;
-  };
 
   return view;
 };

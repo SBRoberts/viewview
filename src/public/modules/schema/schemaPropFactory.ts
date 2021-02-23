@@ -7,7 +7,7 @@ export const schemaPropFactory = (schema: Schema) => (
   const prototype = Object.create({
     id: "_" + Math.random().toString(36).substr(2, 9),
     update: update,
-    calc: useCalc(schema),
+    compute: useCompute(schema),
     observe: useObserve,
   });
 
@@ -25,21 +25,25 @@ export const schemaPropFactory = (schema: Schema) => (
 function update(value) {
   if (this.value !== value) {
     const newValue = this.expression ? this.expression(value) : value;
-
+    console.log("newValue", newValue);
+    console.log("this.observers", this.observers);
     this.observers && this.observers.forEach((notify) => notify(newValue));
 
     this.value = newValue;
   }
+
   return this;
 }
 
 /**
  * Display the result of an expression that uses and observes an existing schema property value as a dependency
  */
-const useCalc = (schema: Schema) => {
-  return function (expression: Function) {
+const useCompute = (schema: Schema) => {
+  return function (expression: Function, newProperty = false) {
     const schemaProp = schema.defineProperty(expression(this.value));
+
     schemaProp.expression = expression;
+    schemaProp.parent = this;
 
     this.observe(schemaProp.update, schemaProp);
 
@@ -50,13 +54,19 @@ const useCalc = (schema: Schema) => {
 // Notify observing nodes that the value to display has changed
 export const nodeUpdater = (node: Text | Attr) => {
   let oldValue = null;
+  const parent = node.parentElement;
 
   return function updateNode(newValue): void {
     oldValue = this.value;
-
-    node === typeof "attribute object"
-      ? (node.value = node.value.replace(oldValue, newValue))
-      : (node.textContent = node.textContent.replace(oldValue, newValue));
+    if (node === typeof "attribute object") {
+      node.value = node.value.replace(oldValue, newValue);
+    } else if (Array.isArray(newValue)) {
+      console.log("newValue", newValue);
+      node.textContent = "";
+      parent.replaceChildren(...newValue);
+    } else {
+      node.textContent = node.textContent.replace(oldValue, newValue);
+    }
   };
 };
 

@@ -1,6 +1,7 @@
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import typescript from "rollup-plugin-typescript";
+import dotenv from "rollup-plugin-dotenv";
 import pkg from "./package.json";
 
 import serve from "rollup-plugin-serve";
@@ -9,9 +10,11 @@ import livereload from "rollup-plugin-livereload";
 const isProduction = process.env.NODE_ENV === "prod";
 
 const rollupOptions = {
-  input: "demo/src/demo.js",
-  external: ["ms"],
+  input: "demo/src/app.js",
   plugins: [
+    resolve(), // so Rollup can find `ms`
+    commonjs(), // so Rollup can convert `ms` to an ES module
+    dotenv(),
     typescript({
       tsconfig: "tsconfig.json",
     }), // so Rollup can convert TypeScript to JavaScript
@@ -19,16 +22,13 @@ const rollupOptions = {
   watch: {
     include: ["demo/src/**", "src/**"],
   },
-
   output: [
     {
       compact: false,
       file: `demo/dist/index.js`,
-      format: "es",
+      format: "umd",
       sourcemap: true,
     },
-    { file: pkg.main, format: "cjs" },
-    { file: pkg.module, format: "es" },
   ],
 };
 
