@@ -16,20 +16,14 @@ const transformTextNode = (schemaProp) => {
   const { id, value } = schemaProp;
   return (node: Text) => {
     const valueType = deriveArgType(value);
-
     // If the current text node contains the current id, do stuff
     if (node.textContent.includes(id)) {
       schemaProp.observe(nodeUpdater(node), schemaProp);
-      // console.log("schemaProp", schemaProp);
-      // console.log("node", node);
 
       if (valueType === "array") {
         value.forEach(transformTextNode(schemaProp));
         node.textContent = node.textContent.replace(id, "");
       } else if (valueType !== "object") {
-        // console.log("node", node);
-        // console.log("id", id);
-        // console.log("value", value);
         node.textContent = node.textContent.replace(id, value);
       }
     }
@@ -80,8 +74,9 @@ const transformChildNode = ({ schemaProps }) => (node) =>
 
 const appendChildren = (schema: Schema, view: View) => (schemaProp) => {
   const { id, value } = schemaProp;
-  const placeholder = view.querySelector(`del[data-id="${id}"`);
+  const placeholder = view.querySelector(`del[data-id="${id}"]`);
   if (placeholder) {
+    schemaProp.observe(nodeUpdater(placeholder), schemaProp);
     const arrayifiedVal = Array.isArray(value) ? value : [value];
     arrayifiedVal.forEach(
       ({ viewModel }) => viewModel && schema.defineProperty(viewModel)

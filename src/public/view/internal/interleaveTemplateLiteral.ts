@@ -1,11 +1,10 @@
 import { Schema } from "../../modules";
 
-const usePlaceholder = (schema, id, arg): string | undefined => {
+const usePlaceholder = (schema, { id, value }): string | undefined => {
   const isElement = (node) =>
     node instanceof DocumentFragment || node instanceof HTMLElement;
-  const isArrayOfElements = Array.isArray(arg) && arg.every(isElement);
-
-  if (isArrayOfElements || isElement(arg)) {
+  const isArrayOfElements = Array.isArray(value) && value.every(isElement);
+  if (isArrayOfElements || isElement(value)) {
     return `<del data-id="${id}"></del>`;
   }
 
@@ -21,8 +20,8 @@ export const interleaveTemplateLiteral = (
   args
     .reduce(
       (acc, arg, index) => {
-        const { id } = schema.defineProperty(arg);
-        const argument = usePlaceholder(schema, id, arg) || id;
+        const schemaProp = schema.defineProperty(arg);
+        const argument = usePlaceholder(schema, schemaProp) || schemaProp.id;
         return [...acc, argument, strings[index + 1]];
       },
       [strings[0]]
