@@ -1,6 +1,6 @@
 {
   "name": "viewview",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/viewview.cjs.js",
   "module": "dist/viewview.esm.js",
   "browser": "dist/viewview.umd.js",
