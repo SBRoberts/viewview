@@ -5,13 +5,14 @@ export const schemaPropFactory = (schema: Schema) => (
   value
 ): SchemaProp => {
   const prototype = Object.create({
+    key,
     id: "_" + Math.random().toString(36).substr(2, 9),
     update: update,
     compute: useCompute(schema),
     observe: useObserve,
   });
 
-  const schemaProp = Object.assign(prototype, { key, value });
+  const schemaProp = Object.assign(prototype, { value });
 
   return schemaProp;
 };
@@ -25,8 +26,6 @@ export const schemaPropFactory = (schema: Schema) => (
 function update(value) {
   if (this.value !== value) {
     const newValue = this.expression ? this.expression(value) : value;
-    console.log("newValue", newValue);
-    console.log("this.observers", this.observers);
     this.observers && this.observers.forEach((notify) => notify(newValue));
 
     this.value = newValue;
@@ -41,8 +40,9 @@ function update(value) {
 const useCompute = (schema: Schema) => {
   return function (expression: Function, newProperty = false) {
     const schemaProp = schema.defineProperty(expression(this.value));
-
     schemaProp.expression = expression;
+
+    // We need a ref to the parent prop so we can correctly render this data and expose the correct ViewModel properties
     schemaProp.parent = this;
 
     this.observe(schemaProp.update, schemaProp);
@@ -61,7 +61,6 @@ export const nodeUpdater = (node: Text | Attr) => {
     if (node === typeof "attribute object") {
       node.value = node.value.replace(oldValue, newValue);
     } else if (Array.isArray(newValue)) {
-      console.log("newValue", newValue);
       node.textContent = "";
       parent.replaceChildren(...newValue);
     } else {

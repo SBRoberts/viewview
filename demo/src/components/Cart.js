@@ -16,18 +16,19 @@ export const Cart = () => {
   // Initialize state
   const state = useViewModel({
     isOpen: false,
-    items: cart.getAll().map((item) => CartItem(item)),
+    items: cart.getAll(),
     total: 0,
   });
-
-  // Compute initial values
-  state.total = deriveCartTotal(state.items);
 
   // Destructure keys for ease of use
   const { $isOpen, $items, $total } = state;
 
-  // Open/Close callback
+  // Compute initial values
+  state.total = deriveCartTotal(state.items);
+
+  // Compute callbacks
   const openCallback = (isOpen) => (isOpen ? "open" : "closed");
+  const cartItemsCallback = (items) => items.map((item) => CartItem(item));
 
   // Construct the view
   const element = view`
@@ -43,7 +44,7 @@ export const Cart = () => {
           </button>
         </div>
         <ul class="cart__items">
-          ${$items}
+          ${$items.compute(cartItemsCallback)}
         </ul>
         <div class="cart__total">
           Total: <span class="cart__sum">$${$total}</span>
@@ -60,14 +61,11 @@ export const Cart = () => {
     state.isOpen = !state.isOpen;
   });
 
-  // Subscribe to any cart changes – this implementation has nothing to do with viewview
+  // Subscribe to any cart changes – this implementation has nothing to do with the ViewView library
   cart.subscribe((newItems) => {
-    state.items = newItems.map((item) => CartItem(item));
+    state.items = newItems;
     state.total = deriveCartTotal(newItems);
   });
-
-  console.log("state", state);
-  console.log("element.viewModel", element.viewModel);
 
   return element;
 };

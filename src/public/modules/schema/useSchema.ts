@@ -21,14 +21,16 @@ export const useSchema = function (instance: Schema | undefined): Schema {
     defineProperty(value = undefined, key = undefined) {
       const generateSchemaProp = schemaPropFactory(this);
 
+      // Handle schemaProps provided as values
       if (isSchemaProp(value)) {
         const { id, parent } = value;
-
+        // Does the schema prop exist in this schema already?
         if (!this.hasId(id)) {
           this.props.push(value);
           this.ids.push(id);
         }
 
+        // If the schema prop has a parent, we want to register the parent
         if (parent && !this.hasId(parent.id)) {
           this.props.push(parent);
           this.ids.push(parent.id);
@@ -38,8 +40,10 @@ export const useSchema = function (instance: Schema | undefined): Schema {
       }
 
       const prop: SchemaProp = generateSchemaProp(key, value);
+
       this.props.push(prop);
       this.ids.push(prop.id);
+
       return prop;
     },
     getPropertyByKey(key): SchemaProp {

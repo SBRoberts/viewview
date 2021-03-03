@@ -37,7 +37,7 @@ export const useViewModel = function (
 
       // Maintain use of static methods, like array.map
       if (key in model.__proto__) {
-        return Reflect.get(...arguments);
+        return Reflect.get(model, key);
       }
 
       let prop = model[key];
