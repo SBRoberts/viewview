@@ -23,7 +23,7 @@ export const view = function (
   const view = transformNodes(schema, template.content);
 
   view.collect = useCollect(view);
-  view.viewModel = useViewModel(schema, view);
+  view.viewModel = useViewModel(schema);
 
   return view;
 };

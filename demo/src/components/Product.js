@@ -40,11 +40,7 @@ export const Product = (product) => {
   const { likeBtn, cartBtn } = element.collect();
 
   likeBtn.addEventListener("click", () => (state.likes += 1));
-
-  cartBtn.addEventListener("click", () => {
-    console.log("cart", cart);
-    cart.addItem(product.id);
-  });
+  cartBtn.addEventListener("click", () => cart.addItem(product.id));
 
   return element;
 };

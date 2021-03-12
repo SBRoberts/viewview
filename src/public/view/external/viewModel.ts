@@ -1,5 +1,5 @@
 import { handleSetProp } from "../../useViewModel";
-import { useSchema, Schema } from "../../private";
+import { useSchema, Schema, schemaPropFactory } from "../../private";
 import { View } from "../safe";
 
 /**
@@ -8,34 +8,7 @@ import { View } from "../safe";
  * @param schema - The schema used to generate the view
  * @param view - The view on which we are exposing a viewModel
  */
-export const useViewModel = (
-  schema: Schema,
-  view: View
-): Record<any> | void => {
-  let isValidViewModel = false;
-
-  const viewModel = schema.props.reduce((viewModel, schemaProp) => {
-    const { key, value } = schemaProp;
-
-    // If the current schema prop value is an array, iterate through and add any child vm to the parent vm
-    if (Array.isArray(value)) {
-      return value.reduce((viewModel, { viewModel: childVm }) => {
-        return childVm
-          ? (isValidViewModel = true) &&
-              Object.assign(viewModel, childVm.$prototype)
-          : viewModel;
-      }, viewModel);
-    }
-
-    // If there is a key, we know the property was created with the intention of being accessible by the user.
-    if (key) {
-      viewModel[key] = schemaProp;
-      isValidViewModel = true;
-    }
-    return viewModel;
-  }, {});
-
-  // Proxy traps
+export const useViewModel = (schema: Schema): Proxy => {
   const traps = {
     get(model, key) {
       // Expose a secret key that will return the model itself
@@ -49,11 +22,19 @@ export const useViewModel = (
       return Reflect.get(prop, "value");
     },
     set(model, key, value) {
+      const prop = schema.getPropertyByKey(key);
       // Update the prop, if possible
-      const prop = model[key];
       return handleSetProp(prop, value);
     },
   };
 
-  return isValidViewModel ? new Proxy(viewModel, traps) : undefined;
+  const viewModel = schema.props.reduce((viewModel, schemaProp) => {
+    const { key, value } = schemaProp;
+    if (key) {
+      viewModel[key] = schemaProp;
+    }
+    return viewModel;
+  }, {});
+
+  return new Proxy(viewModel, traps);
 };

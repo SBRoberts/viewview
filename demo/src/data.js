@@ -17,7 +17,6 @@ export const cart = {
   addItem(findId) {
     const cart = this.getAll();
     let product = cart.find(({ id }) => id === findId);
-    console.log("product", product);
 
     // Product exists in cart
     if (product) {

@@ -79,7 +79,10 @@ const appendChildren = (schema: Schema, view: View) => (schemaProp) => {
     schemaProp.observe(nodeUpdater(placeholder), schemaProp);
     const arrayifiedVal = Array.isArray(value) ? value : [value];
     arrayifiedVal.forEach(
-      ({ viewModel }) => viewModel && schema.defineProperty(viewModel)
+      ({ viewModel }) =>
+        viewModel &&
+        viewModel.key &&
+        schema.defineProperty(viewModel, viewModel.key)
     );
     placeholder.replaceWith(...arrayifiedVal);
   }
