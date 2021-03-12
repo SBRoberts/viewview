@@ -10,7 +10,6 @@ const appRoot = document.getElementById("root");
 
 // Construct views
 const CartElement = Cart(cart);
-console.log("CartElement", { CartElement });
 const ProductGridElement = ProductGrid(products);
 
 // Append views to DOM
