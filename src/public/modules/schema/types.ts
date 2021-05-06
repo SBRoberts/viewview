@@ -1,14 +1,21 @@
 type SchemaPropId = string;
 type SchemaPropKey = string | undefined;
-type SchemaPropElement = DocumentFragment | Element;
-type SchemaPropValue =
+type SchemaPropElement = Node;
+export type SchemaPropValue =
   | string
   | number
+  | boolean
+  | SchemaProp
   | SchemaPropElement
-  | Array<SchemaPropElement>;
-type SchemaPropUpdate = (newValue: string | number) => void;
+  | SchemaPropValue[];
+type SchemaPropUpdate = (newValue: SchemaPropValue) => void;
 type SchemaPropCalc = (expression: () => string | number) => SchemaProp;
-type SchemaPropNotify = (newValue) => void;
+export type SchemaPropNotify = (newValue: SchemaPropValue) => void;
+export type SchemaPropExpression = (value: SchemaPropValue) => SchemaPropValue;
+export type SchemaPropObserve = (
+  callback: SchemaPropNotify,
+  context: ThisParameterType<SchemaProp>
+) => void;
 
 export interface SchemaProp {
   id: SchemaPropId;
@@ -16,20 +23,25 @@ export interface SchemaProp {
   value: SchemaPropValue;
   update: SchemaPropUpdate;
   calc: SchemaPropCalc;
+  observe: SchemaPropObserve;
   observers?: SchemaPropNotify[];
-  dependants?: SchemaProp[];
+  expression: SchemaPropExpression;
 }
 
 interface SchemaMethods {
   defineProperty: (
-    value: string | number | undefined,
-    key: string | undefined
-  ) => string | number;
-  getPropertyByKey: (key: string) => SchemaProp | undefined;
-  getPropertyByValue: (value: string | number) => SchemaProp | undefined;
-  getPropertyById: (id: string) => SchemaProp | undefined;
-  hasProperty: (key: string) => boolean;
-  hasId: (id: string) => boolean;
+    this: Schema,
+    value: SchemaPropValue,
+    key?: string
+  ) => SchemaProp;
+  getPropertyByKey: (this: Schema, key: string) => SchemaProp | undefined;
+  getPropertyByValue: (
+    this: Schema,
+    value: SchemaPropValue
+  ) => SchemaProp | undefined;
+  getPropertyById: (this: Schema, id: string) => SchemaProp | undefined;
+  hasProperty: (this: Schema, key: string) => boolean;
+  hasId: (this: Schema, id: string) => boolean;
 }
 export interface Schema extends SchemaMethods {
   ids: string[];

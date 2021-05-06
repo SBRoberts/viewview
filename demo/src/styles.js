@@ -1,4 +1,5 @@
 import { css } from "@emotion/css";
+import globalStyles from "./globalStyles";
 
 export const productStyles = css`
   &.product {

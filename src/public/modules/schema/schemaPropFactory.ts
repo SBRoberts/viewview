@@ -1,8 +1,14 @@
-import { Schema } from "./types";
+import {
+  Schema,
+  SchemaProp,
+  SchemaPropValue,
+  SchemaPropNotify,
+  SchemaPropExpression,
+} from "./types";
 
 export const schemaPropFactory = (schema: Schema) => (
   key: string,
-  value
+  value: SchemaPropValue
 ): SchemaProp => {
   const prototype = Object.create({
     key,
@@ -23,10 +29,11 @@ export const schemaPropFactory = (schema: Schema) => (
  * 2. Notify each observing property of the updated value
  * @param value The new value to assign to the schema property
  */
-function update(value) {
+function update(value: SchemaPropValue) {
   if (this.value !== value) {
     const newValue = this.expression ? this.expression(value) : value;
-    this.observers && this.observers.forEach((notify) => notify(newValue));
+    this.observers &&
+      this.observers.forEach((notify: SchemaPropNotify) => notify(newValue));
 
     this.value = newValue;
   }
@@ -38,12 +45,9 @@ function update(value) {
  * Display the result of an expression that uses and observes an existing schema property value as a dependency
  */
 const useCompute = (schema: Schema) => {
-  return function (expression: Function, newProperty = false) {
+  return function (this: SchemaProp, expression: SchemaPropExpression) {
     const schemaProp = schema.defineProperty(expression(this.value));
     schemaProp.expression = expression;
-
-    // We need a ref to the parent prop so we can correctly render this data and expose the correct ViewModel properties
-    schemaProp.parent = this;
 
     this.observe(schemaProp.update, schemaProp);
 
@@ -52,19 +56,30 @@ const useCompute = (schema: Schema) => {
 };
 
 // Notify observing nodes that the value to display has changed
-export const nodeUpdater = (node: Text | Attr) => {
+export const nodeUpdater = (node: Node | Attr) => {
   let oldValue = null;
   const parent = node.parentElement;
 
-  return function updateNode(newValue): void {
+  return function updateNode(
+    this: SchemaProp,
+    newValue: SchemaPropValue
+  ): void {
     oldValue = this.value;
-    if (node === typeof "attribute object") {
-      node.value = node.value.replace(oldValue, newValue);
+    if (node.nodeType === Node.ATTRIBUTE_NODE) {
+      (<Attr>node).value = (<Attr>node).value.replace(
+        oldValue.toString(),
+        newValue.toString()
+      );
     } else if (Array.isArray(newValue)) {
       node.textContent = "";
+      // TODO Extend the 'parent' variable's interface to include a 'replaceChildren' method
+      // @ts-ignore – This prop does exists, TS does not recognize it
       parent.replaceChildren(...newValue);
     } else {
-      node.textContent = node.textContent.replace(oldValue, newValue);
+      node.textContent = node.textContent.replace(
+        oldValue.toString(),
+        newValue.toString()
+      );
     }
   };
 };
@@ -72,7 +87,10 @@ export const nodeUpdater = (node: Text | Attr) => {
 /**
  * Add a dom node as an observer whose value is updated in sync with schema property's value
  */
-export const useObserve = function (callback, property = this): void {
+export const useObserve = function (
+  callback: SchemaPropNotify,
+  context = this
+): void {
   this.observers = this.observers || [];
-  this.observers.push(callback.bind(property));
+  this.observers.push(callback.bind(context));
 };

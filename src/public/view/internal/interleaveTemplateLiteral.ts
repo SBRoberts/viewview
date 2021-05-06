@@ -1,14 +1,20 @@
-import { Schema } from "../../modules";
+import {
+  Schema,
+  SchemaProp,
+  SchemaPropValue,
+} from "../../modules/schema/types";
 
-const usePlaceholder = (schema, { id, value }): string | undefined => {
-  const isElement = (node) =>
-    node instanceof DocumentFragment || node instanceof HTMLElement;
+const usePlaceholder = (
+  schema: Schema,
+  { id, value }: SchemaProp
+): string | undefined => {
+  const isElement = (value: SchemaPropValue) => value instanceof Node;
+
   const isArrayOfElements = Array.isArray(value) && value.every(isElement);
+
   if (isArrayOfElements || isElement(value)) {
     return `<del data-id="${id}"></del>`;
   }
-
-  return false;
 };
 
 // Interleave the template string's string and argument pieces together
