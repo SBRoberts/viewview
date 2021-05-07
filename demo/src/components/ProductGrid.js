@@ -1,4 +1,4 @@
-import { view, useViewModel } from "../../../src/main";
+import { view, useViewModel } from "../../../src";
 import { Product } from "./Product";
 import { productGridStyles } from "../styles";
 

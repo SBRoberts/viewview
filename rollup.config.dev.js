@@ -1,26 +1,26 @@
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
-import typescript from "rollup-plugin-typescript";
-import dotenv from "rollup-plugin-dotenv";
-import pkg from "./package.json";
-
+import typescript from "@rollup/plugin-typescript";
+import injectProcessEnv from "rollup-plugin-inject-process-env";
 import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 
+import baseConfig from "./rollup.config";
+
 const isProduction = process.env.NODE_ENV === "prod";
 
-const rollupOptions = {
+const devConfig = {
   input: "demo/src/app.js",
   plugins: [
     resolve(), // so Rollup can find `ms`
     commonjs(), // so Rollup can convert `ms` to an ES module
-    dotenv(),
-    typescript({
-      tsconfig: "tsconfig.json",
-    }), // so Rollup can convert TypeScript to JavaScript
+    injectProcessEnv({
+      NODE_ENV: process.env.NODE_ENV,
+    }),
+    typescript(), // so Rollup can convert TypeScript to JavaScript
   ],
   watch: {
-    include: ["demo/src/**", "src/**"],
+    include: ["demo/src/**/*", "src/**/*"],
   },
   output: [
     {
@@ -33,16 +33,16 @@ const rollupOptions = {
 };
 
 if (!isProduction) {
-  rollupOptions.plugins.push(
+  devConfig.plugins.push(
     serve({
       port: 3030,
-      open: true,
+      open: false,
       contentBase: "demo/dist",
       // TO TEST ON MOBILE COMMENT THIS IN AND REPLACE WITH YOUR COMPUTER'S IP
       // host: '192.168.0.160'
     })
   );
-  rollupOptions.plugins.push(livereload());
+  devConfig.plugins.push(livereload());
 }
 
-export default [rollupOptions];
+export default [...baseConfig, devConfig];

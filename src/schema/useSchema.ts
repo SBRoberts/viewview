@@ -1,7 +1,7 @@
-import { Schema, SchemaProp } from "./types";
+import { Schema, SchemaProp, SchemaPropValue } from "./types";
 import { schemaPropFactory } from "./schemaPropFactory";
 
-const isSchemaProp = (value) =>
+const isSchemaProp = (value: SchemaPropValue) =>
   typeof value === "object" &&
   "id" in value &&
   "value" in value &&
@@ -11,42 +11,37 @@ const isSchemaProp = (value) =>
  * @description Create a new schema or use an exisiting one. This schema is a private data structure that is used to establish/define the relationship between our view's data
  * @param instance An object to create the schema with. Defaults to empty object. Can be used to couple several schema's together
  */
-export const useSchema = function (instance: Schema | undefined): Schema {
+export const useSchema = function (instance?: Schema): Schema {
   if (instance) {
     return instance;
   }
-  const schema = {
+  const schema: Schema = {
     ids: [],
     props: [],
-    defineProperty(value = undefined, key = undefined) {
+    defineProperty(value, key?) {
       const generateSchemaProp = schemaPropFactory(this);
 
       // Handle schemaProps provided as values
       if (isSchemaProp(value)) {
-        const { id, parent } = value;
+        const schemaProp = <SchemaProp>value;
+        const { id } = schemaProp;
         // Does the schema prop exist in this schema already?
         if (!this.hasId(id)) {
-          this.props.push(value);
+          this.props.push(schemaProp);
           this.ids.push(id);
         }
 
-        // If the schema prop has a parent, we want to register the parent
-        if (parent && !this.hasId(parent.id)) {
-          this.props.push(parent);
-          this.ids.push(parent.id);
-        }
-
-        return value;
+        return schemaProp;
       }
 
-      const prop: SchemaProp = generateSchemaProp(key, value);
+      const schemaProp: SchemaProp = generateSchemaProp(key, value);
 
-      this.props.push(prop);
-      this.ids.push(prop.id);
+      this.props.push(schemaProp);
+      this.ids.push(schemaProp.id);
 
-      return prop;
+      return schemaProp;
     },
-    getPropertyByKey(key): SchemaProp {
+    getPropertyByKey(key) {
       return this.props.find(({ key: propKey }) => propKey === key);
     },
     getPropertyByValue(value): SchemaProp {

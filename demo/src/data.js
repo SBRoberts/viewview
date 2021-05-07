@@ -1,4 +1,4 @@
-import { useViewModel } from "../../src/main";
+import { useViewModel } from "../../src";
 const { localStorage } = window;
 
 const CART = "cart";

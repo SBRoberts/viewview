@@ -1,4 +1,4 @@
-import { view, useViewModel } from "../../../src/main";
+import { view, useViewModel } from "../../../src";
 import { cartItemStyles } from "../styles";
 import { cart } from "../data";
 

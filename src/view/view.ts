@@ -1,16 +1,15 @@
+// Modules
+import { useSchema } from "../schema";
 import { transformNodes, interleaveTemplateLiteral } from "./internal";
+import { useCollect } from "./external";
 
-import { useSchema } from "../modules";
-
-import { useCollect, useViewModel } from "./external";
+// Types
 import { View } from "./types";
+import { Schema } from "../schema/types";
 
-export const view = function (
-  strings: TemplateStringsArray,
-  ...args: any[]
-): View {
+export const view = function (strings: string[], ...args: any[]): View {
   // Create a private schema. Defines relationship between our data and view
-  const schema = useSchema();
+  const schema: Schema = useSchema();
 
   // Assemble strings and ids together as a new string. Store argument in schema
   const interleaved = interleaveTemplateLiteral(strings, args, schema);
@@ -22,8 +21,7 @@ export const view = function (
   // Before returning the view, transform any ids to their intended value
   const view = transformNodes(schema, template.content);
 
-  view.collect = useCollect(view);
-  view.viewModel = useViewModel(schema);
+  (<View>view).collect = useCollect(view);
 
-  return view;
+  return <View>view;
 };

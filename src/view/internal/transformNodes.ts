@@ -1,7 +1,8 @@
-import { Schema, nodeUpdater } from "../../modules";
+import { nodeUpdater } from "../../schema";
+import { Schema, SchemaProp, SchemaPropValue } from "../../schema/types";
 import { View } from "../types";
 
-const deriveArgType = (value) => {
+const deriveArgType = (value: any) => {
   if (Array.isArray(value)) {
     return "array";
   }
@@ -12,45 +13,54 @@ const deriveArgType = (value) => {
 };
 
 // Replace the current text node's containing id w/ its intended value
-const transformTextNode = (schemaProp) => {
+const transformTextNode = (schemaProp: SchemaProp) => {
   const { id, value } = schemaProp;
-  return (node: Text) => {
+  return (node: Node) => {
     const valueType = deriveArgType(value);
+
     // If the current text node contains the current id, do stuff
     if (node.textContent.includes(id)) {
       schemaProp.observe(nodeUpdater(node), schemaProp);
-
-      if (valueType === "array") {
+      if (Array.isArray(value)) {
         value.forEach(transformTextNode(schemaProp));
         node.textContent = node.textContent.replace(id, "");
-      } else if (valueType !== "object") {
-        node.textContent = node.textContent.replace(id, value);
+      } else if (typeof value !== "object") {
+        node.textContent = node.textContent.replace(id, value.toString());
       }
     }
   };
 };
 
 // Loop through every text node replacing any ids w/ their intended value
-const transformTextNodes = (textNodes, schemaProp) =>
+const transformTextNodes = (textNodes: Node[], schemaProp: SchemaProp) =>
   textNodes.forEach(transformTextNode(schemaProp));
 
 // Replace the current attribute node's containing id w/ its intended value
-const transformAttribute = (schemaProp) => {
+const transformAttribute = (schemaProp: SchemaProp) => {
   const { id, value } = schemaProp;
-  return (node) => {
-    if (!node.value.includes(id) || node.name === "data-id") return;
+  return (node: Attr) => {
+    /* Exit early if the attribute does not contain a schema id,
+    if the attribute denotes a placeholder, or if the value is not a string */
+    if (
+      !node.value.includes(id) ||
+      node.name === "data-id" ||
+      typeof value !== "string"
+    ) {
+      return;
+    }
+
     schemaProp.observe(nodeUpdater(node), schemaProp);
     node.value = node.value.replace(id, value);
   };
 };
 
 // Loop through every attribute replacing any ids w/ their intended value
-const transformAttributes = (attributes, schemaProp) =>
+const transformAttributes = (attributes: Attr[], schemaProp: SchemaProp) =>
   attributes.forEach(transformAttribute(schemaProp));
 
 // Given an ID, replace any occurence of that id in the DOM Node's attributes or text w/ its inteded value
-const transformContent = ({ node }) => {
-  const { attributes, childNodes } = node;
+const transformContent = (element: Element) => {
+  const { attributes, childNodes } = element;
 
   // Get all attribute nodes in current node as an array
   const attrs = Array.from(attributes);
@@ -62,37 +72,41 @@ const transformContent = ({ node }) => {
   );
 
   // Loop through all of the current node's attributs/text and replace the given id w/ the intended value
-  return (schemaProp) => {
+  return (schemaProp: SchemaProp) => {
     transformTextNodes(textNodes, schemaProp);
     transformAttributes(attrs, schemaProp);
   };
 };
 
 // Given a DOM Node, iterate through schema ids replacing each textNode and attribute w/ schema val
-const transformChildNode = ({ schemaProps }) => (node) =>
-  schemaProps.forEach(transformContent({ node }));
+const transformChildNode = (schemaProps: SchemaProp[]) => (element: Element) =>
+  schemaProps.forEach(transformContent(element));
 
-const appendChildren = (schema: Schema, view: View) => (schemaProp) => {
+const appendChildren = (schema: Schema, view: DocumentFragment) => (
+  schemaProp: SchemaProp
+) => {
   const { id, value } = schemaProp;
   const placeholder = view.querySelector(`del[data-id="${id}"]`);
-  if (placeholder) {
+
+  const isElement = (value: SchemaPropValue) => value instanceof Node;
+  const isArrayOfElements = Array.isArray(value) && value.every(isElement);
+
+  if (placeholder && (isElement || isArrayOfElements)) {
     schemaProp.observe(nodeUpdater(placeholder), schemaProp);
-    const arrayifiedVal = Array.isArray(value) ? value : [value];
-    arrayifiedVal.forEach(
-      ({ viewModel }) =>
-        viewModel &&
-        viewModel.key &&
-        schema.defineProperty(viewModel, viewModel.key)
-    );
+    const arrayifiedVal = Array.isArray(value) ? <Node[]>value : [<Node>value];
+
     placeholder.replaceWith(...arrayifiedVal);
   }
 };
 
-export const transformNodes = (schema: Schema, view: View): View => {
+export const transformNodes = (
+  schema: Schema,
+  view: DocumentFragment
+): DocumentFragment => {
   const schemaProps = schema.props;
   schemaProps.forEach(appendChildren(schema, view));
 
   const elements = Array.from(view.querySelectorAll("*"));
-  elements.forEach(transformChildNode({ schemaProps }));
+  elements.forEach(transformChildNode(schemaProps));
   return view;
 };
