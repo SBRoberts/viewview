@@ -1,5 +1,5 @@
-import { Schema, nodeUpdater } from "../../modules";
-import { SchemaProp, SchemaPropValue } from "../../modules/schema/types";
+import { nodeUpdater } from "../../schema";
+import { Schema, SchemaProp, SchemaPropValue } from "../../schema/types";
 import { View } from "../types";
 
 const deriveArgType = (value: any) => {

@@ -1,6 +1,6 @@
 /* eslint-disable prefer-rest-params */
-import { useSchema } from "../modules";
-import { Schema, SchemaProp, SchemaPropValue } from "../modules/schema/types";
+import { useSchema } from "../schema";
+import { Schema, SchemaProp, SchemaPropValue } from "../schema/types";
 
 import { View } from "../view";
 

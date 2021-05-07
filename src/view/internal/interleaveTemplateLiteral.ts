@@ -1,8 +1,4 @@
-import {
-  Schema,
-  SchemaProp,
-  SchemaPropValue,
-} from "../../modules/schema/types";
+import { Schema, SchemaProp, SchemaPropValue } from "../../schema/types";
 
 const usePlaceholder = (
   schema: Schema,

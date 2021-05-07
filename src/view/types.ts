@@ -1,4 +1,4 @@
-import { SchemaProp } from "../modules";
+import { SchemaProp } from "../schema";
 export type collectedElements = Record<string, Element>;
 type viewModel = Record<string | number, SchemaProp> | undefined;
 

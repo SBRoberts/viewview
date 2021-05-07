@@ -1,10 +1,11 @@
+// Modules
+import { useSchema } from "../schema";
 import { transformNodes, interleaveTemplateLiteral } from "./internal";
-
-import { useSchema } from "../modules";
-
 import { useCollect } from "./external";
+
+// Types
 import { View } from "./types";
-import { Schema } from "../modules/schema/types";
+import { Schema } from "../schema/types";
 
 export const view = function (strings: string[], ...args: any[]): View {
   // Create a private schema. Defines relationship between our data and view
