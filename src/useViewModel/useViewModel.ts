@@ -1,16 +1,27 @@
 /* eslint-disable prefer-rest-params */
 import { useSchema } from "../schema";
-import { Schema, SchemaProp, SchemaPropValue } from "../schema/types";
+import { Schema, SchemaProp, SchemaPropValue, SPV, SP } from "../schema/types";
 
 import { View } from "../view";
+type ExpandRecursively<T> = T extends object
+  ? T extends infer O ? { [K in keyof O]: ExpandRecursively<O[K]> } : never
+  : T;
+
+type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : T;
+
 
 type ViewModelSchemaProps<TModel> = {
-  [P in keyof TModel & string as `$${P}`]: SchemaProp;
+  [P in keyof TModel & string as `$${P}`]-?: Expand<Pick<SP<TModel[P]>, 'value' | 'compute'>>;
 };
-type ViewModelProps<TModel> = {
-  [P in keyof TModel & string]: TModel[P];
-};
-type ViewModel<TModel> = ViewModelProps<TModel> | ViewModelSchemaProps<TModel>;
+
+// type ViewModelSP<TModel extends Record<string, any>> = ExpandRecursively<ViewModelSchemaProps<TModel>>
+
+// type ViewModelProps<TModel> = Expand<{
+//   [P in keyof TModel & string]: TModel[P];
+// }>;
+
+type ViewModel<TModel> = Expand<TModel & ViewModelSchemaProps<TModel>> ;
+
 
 export const handleSetProp = (prop: SchemaProp, value: SchemaPropValue) => {
   // Return undefined if the prop isn't defined.
@@ -28,9 +39,7 @@ export const handleSetProp = (prop: SchemaProp, value: SchemaPropValue) => {
  * * Ex: `<span style="color: ${data.$myColour}">${data.$myColour}</span>`
  * @param model the object whose data will populate the view. Updating this model will also update the view.
  */
-export const useViewModel = function <
-  TModel extends Record<string, SchemaPropValue>
->(model: TModel): ViewModel<TModel> {
+export const useViewModel = function <TModel extends Record<string, SchemaPropValue>>(model: TModel): ViewModel<TModel> {
   const schema: Schema = useSchema();
 
   model = Object.assign({}, model);
@@ -80,6 +89,6 @@ export const useViewModel = function <
     },
   };
 
-  const proxy = new Proxy<ViewModel<TModel>>(model, traps);
-  return proxy;
+  const proxy = new Proxy<TModel>(model, traps);
+  return proxy as ViewModel<TModel>
 };

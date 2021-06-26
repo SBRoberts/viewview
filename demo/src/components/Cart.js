@@ -26,25 +26,21 @@ export const Cart = () => {
   // Compute initial values
   state.total = deriveCartTotal(state.items);
 
-  // Compute callbacks
-  const openCallback = (isOpen) => (isOpen ? "open" : "closed");
-  const cartItemsCallback = (items) => items.map((item) => CartItem(item));
+  // Define callbacks
+  const computedOpenState = $isOpen.compute((isOpen) => (isOpen ? "open" : "closed"));
+  const computedCartItems = $items.compute((items) => items.map((item) => CartItem(item)));
 
   // Construct the view
   const element = view`
-    <div ref="cartContainer" class="${cartStyles} cart cart--${$isOpen.compute(
-    openCallback
-  )}">
+    <div ref="cartContainer" class="${cartStyles} cart cart--${computedOpenState}">
       <div class="cart__contentContainer">
         <div  class="cart__controlContainer">
-          <button ref="cartBtn" class="cart__control cart__control--${$isOpen.compute(
-            openCallback
-          )}">
+          <button ref="cartBtn" class="cart__control cart__control--${computedOpenState}">
             ${CartIcon()}
           </button>
         </div>
         <ul class="cart__items">
-          ${$items.compute(cartItemsCallback)}
+          ${computedCartItems}
         </ul>
         <div class="cart__total">
           Total: <span class="cart__sum">$${$total}</span>

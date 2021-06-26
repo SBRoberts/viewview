@@ -1,13 +1,21 @@
 type SchemaPropId = string;
 type SchemaPropKey = string | undefined;
 type SchemaPropElement = Node;
-export type SchemaPropValue =
+export type SchemaPropValue= 
   | string
   | number
   | boolean
   | SchemaProp
   | SchemaPropElement
   | SchemaPropValue[];
+  export type SPV<TValue> =
+    TValue extends string ? TValue :
+    TValue extends number ? TValue :
+    TValue extends boolean ? TValue :
+    TValue extends SchemaProp? TValue :
+    TValue extends SchemaPropElement ? TValue :
+    TValue extends SchemaPropValue[] ? TValue :
+    never
 type SchemaPropUpdate = (newValue: SchemaPropValue) => void;
 type SchemaPropCalc = (expression: () => string | number) => SchemaProp;
 export type SchemaPropNotify = (newValue: SchemaPropValue) => void;
@@ -23,6 +31,16 @@ export interface SchemaProp {
   value: SchemaPropValue;
   update: SchemaPropUpdate;
   calc: SchemaPropCalc;
+  observe: SchemaPropObserve;
+  observers?: SchemaPropNotify[];
+  expression: SchemaPropExpression;
+}
+export interface SP<TVal> {
+  id: SchemaPropId;
+  key: SchemaPropKey;
+  value: TVal;
+  update: SchemaPropUpdate;
+  compute: SchemaPropCalc;
   observe: SchemaPropObserve;
   observers?: SchemaPropNotify[];
   expression: SchemaPropExpression;

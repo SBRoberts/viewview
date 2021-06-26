@@ -58,8 +58,8 @@ const List = (props) => {
           ? view`
           <li ref="listItem${i}">
             List Item: ${num} +
-            <span>${num.compute((val) => val + 1)}</span> =
-            <span>${num.compute((val) => val + val + 1)}</span>
+            <span>${num.compute((num) => num + 1)}</span> =
+            <span>${num.compute((num) => num + num + 1)}</span>
           </li>
           `
           : view`<li>List Item: ${num} is aight too</li>`
