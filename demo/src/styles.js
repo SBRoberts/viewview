@@ -1,10 +1,12 @@
 import { css } from "@emotion/css";
 import globalStyles from "./globalStyles";
 
+const highlightColour = 'mediumaquamarine'
+
 export const productStyles = css`
   &.product {
     align-items: center;
-    border: 2px solid mediumspringgreen;
+    border: 2px solid ${highlightColour};
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -27,7 +29,7 @@ export const productStyles = css`
     }
 
     &__image {
-      border: 1px solid mediumspringgreen;
+      border: 1px solid ${highlightColour};
       border-radius: 10px;
       box-shadow: 0 20px 16px -10px #ddd;
       height: 100%;
@@ -47,7 +49,7 @@ export const productStyles = css`
     &__likeBtn {
       align-items: center;
       background: none;
-      border: 1px solid mediumspringgreen;
+      border: 1px solid ${highlightColour};
       border-radius: 5px;
       cursor: pointer;
       display: flex;
@@ -63,7 +65,7 @@ export const productStyles = css`
       cursor: pointer;
       margin-right: 10px;
       svg {
-        fill: mediumspringgreen;
+        fill: ${highlightColour};
         max-width: 50px;
         min-width: 25px;
       }
@@ -79,13 +81,13 @@ export const productStyles = css`
     }
 
     &__priceContainer {
-      /* background: mediumspringgreen;
+      /* background: ${highlightColour};
       border-radius: 5px; */
       padding: 5px;
       width: 100%;
     }
     &__price {
-      color: mediumspringgreen;
+      color: ${highlightColour};
       font-size: 1.25em;
       font-weight: 700;
       text-decoration: underline;
@@ -106,7 +108,7 @@ export const cartStyles = css`
   &.cart,
   .cart {
     background: white;
-    border: 2px solid mediumspringgreen;
+    border: 2px solid ${highlightColour};
     border-radius: 20px 0 0 20px;
     height: 100vh;
     position: fixed;
@@ -134,7 +136,7 @@ export const cartStyles = css`
     &__controlContainer {
       box-shadow: 0 0 20px 0px #ddd;
       border-radius: 17px 0 0 0;
-      background: mediumspringgreen;
+      background: ${highlightColour};
       text-align: left;
       width: 100%;
     }
@@ -156,7 +158,7 @@ export const cartStyles = css`
           transform: translateX(-100%) scale(1.15);
         }
         svg {
-          fill: mediumspringgreen;
+          fill: ${highlightColour};
         }
       }
       &--open svg {
@@ -177,7 +179,7 @@ export const cartStyles = css`
     }
 
     &__total {
-      color: mediumspringgreen;
+      color: ${highlightColour};
       display: block;
       font-size: 20px;
       font-weight: 400;
@@ -185,7 +187,7 @@ export const cartStyles = css`
       padding: 15px;
       position: relative;
       &:before {
-        background: mediumspringgreen;
+        background: ${highlightColour};
         content: "";
         position: absolute;
         left: 0;
@@ -219,7 +221,7 @@ export const cartItemStyles = css`
     }
 
     &__image {
-      border: 1px solid mediumspringgreen;
+      border: 1px solid ${highlightColour};
       border-radius: 10px;
       height: 100%;
       object-fit: cover;
@@ -245,12 +247,12 @@ export const cartItemStyles = css`
     &__quantity {
       background: white;
       border: none;
-      color: mediumspringgreen;
+      color: ${highlightColour};
       font-weight: 700;
       font-size: 18px;
     }
     &__btn {
-      background: mediumspringgreen;
+      background: ${highlightColour};
       border-radius: 5px;
       color: white;
       min-width: 30px;
@@ -258,7 +260,7 @@ export const cartItemStyles = css`
       transition: background 0.3s ease-out, color 0.3s ease-out;
       &:hover {
         background: white;
-        color: mediumspringgreen;
+        color: ${highlightColour};
       }
     }
   }

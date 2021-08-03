@@ -9,12 +9,9 @@ type ExpandRecursively<T> = T extends object
 
 type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : T;
 
-
 type ViewModelSchemaProps<TModel> = {
   [P in keyof TModel & string as `$${P}`]-?: Expand<Pick<SP<TModel[P]>, 'value' | 'compute'>>;
 };
-
-// type ViewModelSP<TModel extends Record<string, any>> = ExpandRecursively<ViewModelSchemaProps<TModel>>
 
 // type ViewModelProps<TModel> = Expand<{
 //   [P in keyof TModel & string]: TModel[P];
@@ -33,9 +30,10 @@ export const handleSetProp = (prop: SchemaProp, value: SchemaPropValue) => {
 };
 
 /**
- * @description A View Model is a collection of data that is used within your view. When you update this data,
- * your view will also update. If you are reusing properties within your view, it is important to prefix your properties with **`$`**.
- * Otherwise, you can get and set properties in your object like you would normally
+ * @description A View Model is a collection of data meant specifically for your view. When you update this data,
+ * your view will also update.
+ * This is important: If you are reusing properties within your view``, you should prefix your properties keys with a **`$`**.
+ * Apart from that, you can get and set properties in your view model like you would normally
  * * Ex: `<span style="color: ${data.$myColour}">${data.$myColour}</span>`
  * @param model the object whose data will populate the view. Updating this model will also update the view.
  */
@@ -60,7 +58,11 @@ export const useViewModel = function <TModel extends Record<string, SchemaPropVa
       if (key in Object.prototype || key in Array.prototype) {
         return Reflect.get(model, key);
       }
-      let prop = model[key];
+
+      if (typeof model !== "object") {
+        return;
+      }
+      const prop = model[key];
 
       const isSchemaProp =
         typeof prop === "object" && "id" in prop && schema.hasId(prop.id);
@@ -77,10 +79,14 @@ export const useViewModel = function <TModel extends Record<string, SchemaPropVa
         return Reflect.get(<SchemaProp>prop, "value");
       }
 
+      if (!isSchemaProp && !isContructing) {
+        return prop;
+      }
+
       // Our property exists in our model, but not in our schema. Let's define and return it
       const schemaProp = schema.defineProperty(prop, key);
       Reflect.set(model, key, schemaProp);
-      return isContructing ? schemaProp : prop;
+      return schemaProp;
     },
     set(model, key, value) {
       if (typeof key === "symbol") return false;
@@ -89,6 +95,6 @@ export const useViewModel = function <TModel extends Record<string, SchemaPropVa
     },
   };
 
-  const proxy = new Proxy<TModel>(model, traps);
+  const proxy = new Proxy<TModel>(model, traps) ;
   return proxy as ViewModel<TModel>
 };

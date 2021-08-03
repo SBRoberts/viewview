@@ -7,7 +7,10 @@ import { useCollect } from "./external";
 import { View } from "./types";
 import { Schema } from "../schema/types";
 
-export const view = function (strings: string[], ...args: any[]): View {
+export const view = function (
+  strings: TemplateStringsArray,
+  ...args: any[]
+): View {
   // Create a private schema. Defines relationship between our data and view
   const schema: Schema = useSchema();
 

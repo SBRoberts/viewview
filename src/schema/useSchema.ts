@@ -18,9 +18,7 @@ export const useSchema = function (instance?: Schema): Schema {
   const schema: Schema = {
     ids: [],
     props: [],
-    defineProperty(value, key?) {
-      const generateSchemaProp = schemaPropFactory(this);
-
+    defineProperty(value, key?) { 
       // Handle schemaProps provided as values
       if (isSchemaProp(value)) {
         const schemaProp = <SchemaProp>value;
@@ -30,10 +28,11 @@ export const useSchema = function (instance?: Schema): Schema {
           this.props.push(schemaProp);
           this.ids.push(id);
         }
-
+        
         return schemaProp;
       }
-
+      
+      const generateSchemaProp = schemaPropFactory(this);
       const schemaProp: SchemaProp = generateSchemaProp(key, value);
 
       this.props.push(schemaProp);

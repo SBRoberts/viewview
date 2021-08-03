@@ -9,12 +9,8 @@ const init = () => {
   // Find the app's root element
   const appRoot = document.getElementById("root");
 
-  // Construct views
-  const CartElement = Cart(cart);
-  const ProductGridElement = ProductGrid(products);
-
   // Append views to DOM
-  appRoot.append(CartElement, ProductGridElement);
+  appRoot.append(Cart(cart), ProductGrid(products));
 };
 
 document.addEventListener("DOMContentLoaded", init);

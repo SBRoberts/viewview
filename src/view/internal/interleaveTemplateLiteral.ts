@@ -15,7 +15,7 @@ const usePlaceholder = (
 
 // Interleave the template string's string and argument pieces together
 export const interleaveTemplateLiteral = (
-  strings: string[],
+  strings: TemplateStringsArray,
   args: any[],
   schema: Schema
 ): string =>

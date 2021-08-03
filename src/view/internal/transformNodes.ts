@@ -40,17 +40,16 @@ const transformAttribute = (schemaProp: SchemaProp) => {
   const { id, value } = schemaProp;
   return (node: Attr) => {
     /* Exit early if the attribute does not contain a schema id,
-    if the attribute denotes a placeholder, or if the value is not a string */
+    if the attribute denotes a placeholder, or if the value is not a string || number */
     if (
-      !node.value.includes(id) ||
-      node.name === "data-id" ||
-      typeof value !== "string"
+      (!node.value.includes(id) || node.name === "data-id") &&
+      (typeof value !== "string" || typeof value !== "number")
     ) {
       return;
     }
 
     schemaProp.observe(nodeUpdater(node), schemaProp);
-    node.value = node.value.replace(id, value);
+    node.value = node.value.replace(id, value.toString());
   };
 };
 

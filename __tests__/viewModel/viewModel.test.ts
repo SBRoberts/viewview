@@ -54,7 +54,6 @@ describe("Basic View Rendering", () => {
     const viewModel = useViewModel(initialState);
 
     const listItemView = view`${viewModel.$items.compute((items: string[]) => {
-      console.log("items", items);
       return items.map(
         (item) => view`<li data-testid="${TEST_ID}">${item}</li>`
       );
@@ -78,7 +77,6 @@ describe("Basic View Rendering", () => {
     };
     assertListItemState(listItemText.length);
     viewModel.items = viewModel.items.push("item 4") && viewModel.items;
-    console.log("viewModel.items", viewModel.items);
     assertListItemState(4);
   });
 });

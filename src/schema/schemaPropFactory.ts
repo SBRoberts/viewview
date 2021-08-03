@@ -6,22 +6,21 @@ import {
   SchemaPropExpression,
 } from "./types";
 
-export const schemaPropFactory = (schema: Schema) => (
-  key: string,
-  value: SchemaPropValue
-): SchemaProp => {
-  const prototype = Object.create({
-    key,
-    id: "_" + Math.random().toString(36).substr(2, 9),
-    update: update,
-    compute: useCompute(schema),
-    observe: useObserve,
-  });
+export const schemaPropFactory =
+  (schema: Schema) =>
+  (key: string, value: SchemaPropValue): SchemaProp => {
+    const prototype = Object.create({
+      key,
+      id: "_" + Math.random().toString(36).substr(2, 9),
+      update: update,
+      compute: useCompute(schema),
+      observe: useObserve,
+    });
 
-  const schemaProp = Object.assign(prototype, { value });
+    const schemaProp: SchemaProp = Object.assign(prototype, { value });
 
-  return schemaProp;
-};
+    return schemaProp;
+  };
 
 /**
  * Given a new value:

@@ -17,7 +17,7 @@ export type SchemaPropValue=
     TValue extends SchemaPropValue[] ? TValue :
     never
 type SchemaPropUpdate = (newValue: SchemaPropValue) => void;
-type SchemaPropCalc = (expression: () => string | number) => SchemaProp;
+type SchemaPropCompute = (expression: SchemaPropExpression) => SchemaProp;
 export type SchemaPropNotify = (newValue: SchemaPropValue) => void;
 export type SchemaPropExpression = (value: SchemaPropValue) => SchemaPropValue;
 export type SchemaPropObserve = (
@@ -30,7 +30,7 @@ export interface SchemaProp {
   key: SchemaPropKey;
   value: SchemaPropValue;
   update: SchemaPropUpdate;
-  calc: SchemaPropCalc;
+  compute: SchemaPropCompute;
   observe: SchemaPropObserve;
   observers?: SchemaPropNotify[];
   expression: SchemaPropExpression;
@@ -40,7 +40,7 @@ export interface SP<TVal> {
   key: SchemaPropKey;
   value: TVal;
   update: SchemaPropUpdate;
-  compute: SchemaPropCalc;
+  compute: SchemaPropCompute;
   observe: SchemaPropObserve;
   observers?: SchemaPropNotify[];
   expression: SchemaPropExpression;

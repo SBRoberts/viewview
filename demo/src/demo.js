@@ -93,11 +93,9 @@ const sectionData = useViewModel({
   titleId: "titleId",
   heading: "Old, 👴🏻",
   number: 90210,
-  img:
-    "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1789&q=80",
+  img: "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1789&q=80",
   imgAlt: "this is an alt tag",
-  body:
-    "I'm baby swag semiotics scenester drinking vinegar franzen lomo. Cornhole man bun hammock mustache slow-carb. Adaptogen keffiyeh 8-bit woke salvia, leggings flannel food truck echo park blog everyday carry hell of.",
+  body: "I'm baby swag semiotics scenester drinking vinegar franzen lomo. Cornhole man bun hammock mustache slow-carb. Adaptogen keffiyeh 8-bit woke salvia, leggings flannel food truck echo park blog everyday carry hell of.",
 });
 
 const SectionList = List(listData);

@@ -9,9 +9,11 @@ export const Product = (product) => {
   const element = view`
     <div class="${productStyles} product">
       <div class="product__imageContainer">
-        <img class ="product__image" src="${state.$image}" alt="${
-    state.$name
-  }" />
+        <img
+          class="product__image"
+          src="${state.$image}"
+          alt="${state.$name}"
+        />
       </div>
       <div class="product__headingContainer">
         <h3 class="product__name">${state.$name}</h3>
@@ -21,18 +23,14 @@ export const Product = (product) => {
         <h4 class="product__price">$${state.$price}</h4>
       </div>
       <div class="product__likesContainer">
-      <button ref="likeBtn" class="product__likeBtn">
-      <span class="product__thumbsUp">
-      ${ThumbsUp()}
-      </span>
-      <span>${state.$likes}</span>
-      </button>
-      </div>
-      
-      <div class="product__cartContainer">
-        <button ref="cartBtn" class="product__likeBtn">
-          Add To Cart
+        <button ref="likeBtn" class="product__likeBtn">
+          <span class="product__thumbsUp"> ${ThumbsUp()} </span>
+          <span>${state.$likes}</span>
         </button>
+      </div>
+
+      <div class="product__cartContainer">
+        <button ref="cartBtn" class="product__likeBtn">Add To Cart</button>
       </div>
     </div>
   `;

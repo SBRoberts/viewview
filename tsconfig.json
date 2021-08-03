@@ -2,7 +2,7 @@
   "include": [
     "demo/src/**/*",
     "src/**/*",
-    "tests/**/*"
+    "__tests__/**/*"
   ],
   "compilerOptions": {
     /* Basic Options */
